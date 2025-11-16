@@ -1,24 +1,182 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>64fd628e-e2a9-4dd6-9f41-d73a649734d9</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Welfare Community</title>
+    <meta name="description" content="A vibrant student community platform for chat, marketplace, Q&A, resources, and hostel reviews">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Skip to content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <meta property="og:title" content="64fd628e-e2a9-4dd6-9f41-d73a649734d9" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="mobile-title">Student Welfare</h1>
+        <button class="profile-btn-mobile" id="profileBtnMobile" aria-label="Open profile">
+            <i class="fas fa-user-circle"></i>
+        </button>
+    </header>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Lovable" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+    <!-- Left Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span class="logo-text">Student Hub</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+        <div class="sidebar-user">
+            <img src="assets/avatars/user.jpg" alt="User avatar" class="user-avatar" id="sidebarAvatar">
+            <div class="user-info">
+                <span class="user-name" id="sidebarUserName">Alex Johnson</span>
+                <span class="user-status online">Online</span>
+            </div>
+        </div>
+
+        <ul class="nav-menu" role="menu">
+            <li role="none">
+                <a href="#dashboard" class="nav-link active" data-page="dashboard" role="menuitem">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+            <li role="none">
+                <a href="#chat" class="nav-link" data-page="chat" role="menuitem">
+                    <i class="fas fa-comments"></i>
+                    <span class="nav-text">General Chat</span>
+                    <span class="badge">12</span>
+                </a>
+            </li>
+            <li role="none">
+                <a href="#marketplace" class="nav-link" data-page="marketplace" role="menuitem">
+                    <i class="fas fa-store"></i>
+                    <span class="nav-text">Buy & Sell</span>
+                </a>
+            </li>
+            <li role="none">
+                <a href="#qna" class="nav-link" data-page="qna" role="menuitem">
+                    <i class="fas fa-question-circle"></i>
+                    <span class="nav-text">Q&A Forum</span>
+                </a>
+            </li>
+            <li role="none">
+                <a href="#resources" class="nav-link" data-page="resources" role="menuitem">
+                    <i class="fas fa-book"></i>
+                    <span class="nav-text">Resources</span>
+                </a>
+            </li>
+            <li role="none">
+                <a href="#hostels" class="nav-link" data-page="hostels" role="menuitem">
+                    <i class="fas fa-building"></i>
+                    <span class="nav-text">Hostels</span>
+                </a>
+            </li>
+            <li role="none">
+                <a href="#blocks" class="nav-link" data-page="blocks" role="menuitem">
+                    <i class="fas fa-ban"></i>
+                    <span class="nav-text">Blocks & Reports</span>
+                </a>
+            </li>
+            <li role="none">
+                <a href="#ratings" class="nav-link" data-page="ratings" role="menuitem">
+                    <i class="fas fa-star"></i>
+                    <span class="nav-text">Ratings</span>
+                </a>
+            </li>
+            <li role="none">
+                <a href="#achievements" class="nav-link" data-page="achievements" role="menuitem">
+                    <i class="fas fa-trophy"></i>
+                    <span class="nav-text">Achievements</span>
+                </a>
+            </li>
+            <li role="none">
+                <a href="#announcements" class="nav-link" data-page="announcements" role="menuitem">
+                    <i class="fas fa-bullhorn"></i>
+                    <span class="nav-text">Announcements</span>
+                </a>
+            </li>
+            <li role="none">
+                <a href="#profile" class="nav-link" data-page="profile" role="menuitem">
+                    <i class="fas fa-user"></i>
+                    <span class="nav-text">Profile</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+                <i class="fas fa-moon"></i>
+                <span class="nav-text">Dark Mode</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="main-content" role="main">
+        <!-- Content will be dynamically loaded here -->
+        <div id="pageContent"></div>
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="bottom-nav" role="navigation" aria-label="Mobile navigation">
+        <a href="#dashboard" class="bottom-nav-link active" data-page="dashboard">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#chat" class="bottom-nav-link" data-page="chat">
+            <i class="fas fa-comments"></i>
+            <span>Chat</span>
+        </a>
+        <a href="#marketplace" class="bottom-nav-link" data-page="marketplace">
+            <i class="fas fa-store"></i>
+            <span>Market</span>
+        </a>
+        <a href="#qna" class="bottom-nav-link" data-page="qna">
+            <i class="fas fa-question-circle"></i>
+            <span>Q&A</span>
+        </a>
+        <a href="#profile" class="bottom-nav-link" data-page="profile">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Modal Container -->
+    <div id="modalContainer"></div>
+
+    <!-- Overlay for mobile menu -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Toast notification container -->
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Scripts -->
+    <script src="mock-data.js"></script>
+    <script src="app.js" type="module"></script>
+
+    <noscript>
+        <div style="padding: 20px; text-align: center; background: #ff6b6b; color: white; font-family: sans-serif;">
+            <h2>JavaScript Required</h2>
+            <p>This application requires JavaScript to be enabled. Please enable JavaScript in your browser settings.</p>
+        </div>
+    </noscript>
+</body>
 </html>
