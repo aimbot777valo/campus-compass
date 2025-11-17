@@ -1,11 +1,14 @@
-import { Home, MessageCircle, Store, HelpCircle, BookOpen, Building, Ban, Star, Trophy, Megaphone, User, GraduationCap } from "lucide-react";
+import { Home, MessageCircle, Store, HelpCircle, BookOpen, Building, Ban, Star, Trophy, Megaphone, User, GraduationCap, Moon, Sun, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface SidebarProps {
   currentPage: string;
   onPageChange: (page: string) => void;
+  onLogout: () => void;
+  userName?: string;
 }
 
 const navItems = [
@@ -22,7 +25,9 @@ const navItems = [
   { id: 'profile', label: 'Profile', icon: User },
 ];
 
-export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
+export function Sidebar({ currentPage, onPageChange, onLogout, userName = "Student" }: SidebarProps) {
+  const { theme, toggleTheme } = useTheme();
+  
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
       <div className="p-4 border-b border-sidebar-border">
@@ -34,10 +39,10 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
         <div className="flex items-center gap-3 p-3 rounded-lg bg-sidebar-accent">
           <Avatar>
             <AvatarImage src="/placeholder.svg" />
-            <AvatarFallback>AJ</AvatarFallback>
+            <AvatarFallback>{userName.substring(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-sidebar-accent-foreground truncate">Alex Johnson</p>
+            <p className="text-sm font-medium text-sidebar-accent-foreground truncate">{userName}</p>
             <p className="text-xs text-muted-foreground flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-success"></span>
               Online
@@ -73,6 +78,25 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
           );
         })}
       </nav>
+
+      <div className="p-4 border-t border-sidebar-border space-y-2">
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
+          onClick={toggleTheme}
+        >
+          {theme === 'dark' ? <Sun className="w-4 h-4 mr-3" /> : <Moon className="w-4 h-4 mr-3" />}
+          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+        </Button>
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-destructive hover:text-destructive hover:bg-sidebar-accent"
+          onClick={onLogout}
+        >
+          <LogOut className="w-4 h-4 mr-3" />
+          Logout
+        </Button>
+      </div>
     </aside>
   );
 }

@@ -3,7 +3,12 @@ import { Sidebar } from "@/components/Sidebar";
 import { Dashboard } from "./Dashboard";
 import { Chat } from "./Chat";
 import { Marketplace } from "./Marketplace";
+import Profile from "./Profile";
+import Auth from "./Auth";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import {
   currentUser,
   initialChatMessages,
@@ -23,7 +28,12 @@ import {
 } from "@/data/mockData";
 
 const Index = () => {
+  const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [user, setUser] = useState<any>(null);
+  const [userName, setUserName] = useState<string>('Student');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [marketplaceItems, setMarketplaceItems] = useState<MarketplaceItem[]>([]);
   const [qnaPosts, setQnaPosts] = useState<QnaPost[]>([]);
@@ -31,6 +41,31 @@ const Index = () => {
   const [hostels, setHostels] = useState<Hostel[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+
+  // Check authentication
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        checkAdminStatus(session.user.id);
+        fetchUserProfile(session.user.id);
+      }
+      setLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        checkAdminStatus(session.user.id);
+        fetchUserProfile(session.user.id);
+      } else {
+        setIsAdmin(false);
+        setUserName('Student');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Initialize data from localStorage or use initial data
   useEffect(() => {
@@ -92,6 +127,44 @@ const Index = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('name')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (data && !error) {
+        setUserName(data.name);
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  };
+
+  const checkAdminStatus = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      setIsAdmin(!!data && !error);
+    } catch (error) {
+      setIsAdmin(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Logged out successfully",
+    });
+  };
 
   const handleSendMessage = (text: string) => {
     const newMessage: ChatMessage = {
@@ -182,10 +255,12 @@ const Index = () => {
           </div>
         );
       case 'profile':
-        return (
+        return user ? (
+          <Profile currentUserId={user.id} isAdmin={isAdmin} />
+        ) : (
           <div className="text-center py-12">
             <h2 className="text-2xl font-bold mb-4">Profile</h2>
-            <p className="text-muted-foreground">Coming soon...</p>
+            <p className="text-muted-foreground">Please log in to view your profile</p>
           </div>
         );
       default:
@@ -193,14 +268,37 @@ const Index = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-background">
+        <div className="animate-pulse text-foreground">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <ThemeProvider>
+        <Auth onSuccess={() => {}} />
+      </ThemeProvider>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} />
-      <main className="ml-64 flex-1 p-8">
-        {renderPage()}
-      </main>
-      <Toaster />
-    </div>
+    <ThemeProvider>
+      <div className="flex min-h-screen bg-background">
+        <Sidebar 
+          currentPage={currentPage} 
+          onPageChange={setCurrentPage}
+          onLogout={handleLogout}
+          userName={userName}
+        />
+        <main className="ml-64 flex-1 p-8">
+          {renderPage()}
+        </main>
+        <Toaster />
+      </div>
+    </ThemeProvider>
   );
 };
 
