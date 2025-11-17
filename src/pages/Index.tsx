@@ -3,15 +3,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { Dashboard } from "./Dashboard";
 import { Chat } from "./Chat";
 import { Marketplace } from "./Marketplace";
-import Profile from "./Profile";
-import Auth from "./Auth";
-import Home from "./Home";
 import { Toaster } from "@/components/ui/toaster";
-import { Button } from "@/components/ui/button";
-import { Home as HomeIcon, LogOut } from "lucide-react";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import {
   currentUser,
   initialChatMessages,
@@ -31,13 +23,7 @@ import {
 } from "@/data/mockData";
 
 const Index = () => {
-  const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState('dashboard');
-  const [showAuth, setShowAuth] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [userName, setUserName] = useState<string>('Student');
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [marketplaceItems, setMarketplaceItems] = useState<MarketplaceItem[]>([]);
   const [qnaPosts, setQnaPosts] = useState<QnaPost[]>([]);
@@ -45,31 +31,6 @@ const Index = () => {
   const [hostels, setHostels] = useState<Hostel[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-
-  // Check authentication
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        checkAdminStatus(session.user.id);
-        fetchUserProfile(session.user.id);
-      }
-      setLoading(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        checkAdminStatus(session.user.id);
-        fetchUserProfile(session.user.id);
-      } else {
-        setIsAdmin(false);
-        setUserName('Student');
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   // Initialize data from localStorage or use initial data
   useEffect(() => {
@@ -131,47 +92,6 @@ const Index = () => {
 
     return () => clearInterval(interval);
   }, []);
-
-  const fetchUserProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('name')
-        .eq('id', userId)
-        .maybeSingle();
-
-      if (data && !error) {
-        setUserName(data.name);
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    }
-  };
-
-  const checkAdminStatus = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
-
-      setIsAdmin(!!data && !error);
-    } catch (error) {
-      setIsAdmin(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setShowAuth(false);
-    setCurrentPage('dashboard');
-    toast({
-      title: "Logged out successfully",
-    });
-  };
 
   const handleSendMessage = (text: string) => {
     const newMessage: ChatMessage = {
@@ -262,12 +182,10 @@ const Index = () => {
           </div>
         );
       case 'profile':
-        return user ? (
-          <Profile currentUserId={user.id} isAdmin={isAdmin} />
-        ) : (
+        return (
           <div className="text-center py-12">
             <h2 className="text-2xl font-bold mb-4">Profile</h2>
-            <p className="text-muted-foreground">Please log in to view your profile</p>
+            <p className="text-muted-foreground">Coming soon...</p>
           </div>
         );
       default:
@@ -276,61 +194,13 @@ const Index = () => {
   };
 
   return (
-    <ThemeProvider>
-      {/* Always-visible header with conditional buttons */}
-      <header className="fixed top-0 inset-x-0 lg:left-64 h-14 bg-background/80 backdrop-blur border-b border-border z-20 flex items-center justify-end px-4 gap-2">
-        {user ? (
-          <>
-            <Button variant="outline" size="sm" onClick={handleLogout}>
-              <HomeIcon className="w-4 h-4 mr-2" />
-              Home (Public)
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button variant="outline" size="sm" onClick={() => setShowAuth(false)}>
-              <HomeIcon className="w-4 h-4 mr-2" />
-              Home
-            </Button>
-            <Button variant="default" size="sm" onClick={() => setShowAuth(true)}>
-              Sign In
-            </Button>
-          </>
-        )}
-      </header>
-
-      {loading ? (
-        <div className="flex items-center justify-center h-screen bg-background">
-          <div className="animate-pulse text-foreground">Loading...</div>
-        </div>
-      ) : !user ? (
-        <>
-          {showAuth ? (
-            <Auth onSuccess={() => setShowAuth(false)} />
-          ) : (
-            <Home onNavigateToAuth={() => setShowAuth(true)} />
-          )}
-        </>
-      ) : (
-        <div className="flex min-h-screen bg-background">
-          <Sidebar 
-            currentPage={currentPage} 
-            onPageChange={setCurrentPage}
-            onLogout={handleLogout}
-            userName={userName}
-          />
-          <main className="ml-64 flex-1 p-8 pt-20">
-            {renderPage()}
-          </main>
-        </div>
-      )}
-      
+    <div className="flex min-h-screen bg-background">
+      <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} />
+      <main className="ml-64 flex-1 p-8">
+        {renderPage()}
+      </main>
       <Toaster />
-    </ThemeProvider>
+    </div>
   );
 };
 
