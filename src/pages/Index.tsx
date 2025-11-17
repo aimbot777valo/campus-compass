@@ -8,7 +8,7 @@ import Auth from "./Auth";
 import Home from "./Home";
 import { Toaster } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
-import { Home as HomeIcon } from "lucide-react";
+import { Home as HomeIcon, LogOut } from "lucide-react";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -275,48 +275,61 @@ const Index = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-background">
-        <div className="animate-pulse text-foreground">Loading...</div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <ThemeProvider>
-        {showAuth ? (
-          <Auth onSuccess={() => setShowAuth(false)} />
-        ) : (
-          <Home onNavigateToAuth={() => setShowAuth(true)} />
-        )}
-        <Toaster />
-      </ThemeProvider>
-    );
-  }
-
   return (
     <ThemeProvider>
-      <header className="fixed left-64 right-0 top-0 h-14 bg-background/80 backdrop-blur border-b border-border z-10 flex items-center justify-end px-6 gap-2">
-        <Button variant="outline" onClick={handleLogout}>
-          <HomeIcon className="w-4 h-4 mr-2" />
-          Home
-        </Button>
-        <Button variant="outline" onClick={handleLogout}>Sign Out</Button>
+      {/* Always-visible header with conditional buttons */}
+      <header className="fixed top-0 inset-x-0 lg:left-64 h-14 bg-background/80 backdrop-blur border-b border-border z-20 flex items-center justify-end px-4 gap-2">
+        {user ? (
+          <>
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              <HomeIcon className="w-4 h-4 mr-2" />
+              Home (Public)
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button variant="outline" size="sm" onClick={() => setShowAuth(false)}>
+              <HomeIcon className="w-4 h-4 mr-2" />
+              Home
+            </Button>
+            <Button variant="default" size="sm" onClick={() => setShowAuth(true)}>
+              Sign In
+            </Button>
+          </>
+        )}
       </header>
-      <div className="flex min-h-screen bg-background">
-        <Sidebar 
-          currentPage={currentPage} 
-          onPageChange={setCurrentPage}
-          onLogout={handleLogout}
-          userName={userName}
-        />
-        <main className="ml-64 flex-1 p-8 pt-20">
-          {renderPage()}
-        </main>
-        <Toaster />
-      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center h-screen bg-background">
+          <div className="animate-pulse text-foreground">Loading...</div>
+        </div>
+      ) : !user ? (
+        <>
+          {showAuth ? (
+            <Auth onSuccess={() => setShowAuth(false)} />
+          ) : (
+            <Home onNavigateToAuth={() => setShowAuth(true)} />
+          )}
+        </>
+      ) : (
+        <div className="flex min-h-screen bg-background">
+          <Sidebar 
+            currentPage={currentPage} 
+            onPageChange={setCurrentPage}
+            onLogout={handleLogout}
+            userName={userName}
+          />
+          <main className="ml-64 flex-1 p-8 pt-20">
+            {renderPage()}
+          </main>
+        </div>
+      )}
+      
+      <Toaster />
     </ThemeProvider>
   );
 };
