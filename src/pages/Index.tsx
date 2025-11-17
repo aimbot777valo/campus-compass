@@ -5,6 +5,7 @@ import { Chat } from "./Chat";
 import { Marketplace } from "./Marketplace";
 import Profile from "./Profile";
 import Auth from "./Auth";
+import Home from "./Home";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,6 +31,7 @@ import {
 const Index = () => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [showAuth, setShowAuth] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [userName, setUserName] = useState<string>('Student');
   const [isAdmin, setIsAdmin] = useState(false);
@@ -279,7 +281,12 @@ const Index = () => {
   if (!user) {
     return (
       <ThemeProvider>
-        <Auth onSuccess={() => {}} />
+        {showAuth ? (
+          <Auth onSuccess={() => setShowAuth(false)} />
+        ) : (
+          <Home onNavigateToAuth={() => setShowAuth(true)} />
+        )}
+        <Toaster />
       </ThemeProvider>
     );
   }
