@@ -1,4 +1,4 @@
-import { Home, MessageCircle, Store, HelpCircle, BookOpen, Building, Ban, Star, Trophy, Megaphone, User, GraduationCap, Moon, Sun, LogOut } from "lucide-react";
+import { Home, MessageCircle, Store, HelpCircle, BookOpen, Building, Ban, Star, Trophy, Megaphone, User, GraduationCap, Moon, Sun, LogOut, Home as HomeIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
@@ -87,6 +87,14 @@ export function Sidebar({ currentPage, onPageChange, onLogout, userName = "Stude
         >
           {theme === 'dark' ? <Sun className="w-4 h-4 mr-3" /> : <Moon className="w-4 h-4 mr-3" />}
           {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+        </Button>
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-primary hover:bg-sidebar-accent"
+          onClick={onLogout}
+        >
+          <HomeIcon className="w-4 h-4 mr-3" />
+          Go to Home
         </Button>
         <Button
           variant="ghost"
