@@ -7,6 +7,7 @@ import Profile from "./Profile";
 import Auth from "./Auth";
 import Home from "./Home";
 import { Toaster } from "@/components/ui/toaster";
+import { Button } from "@/components/ui/button";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -304,6 +305,9 @@ const Index = () => {
           userName={userName}
         />
         <main className="ml-64 flex-1 p-8">
+          <div className="flex justify-end mb-6">
+            <Button variant="outline" onClick={handleLogout}>Sign Out</Button>
+          </div>
           {renderPage()}
         </main>
         <Toaster />
