@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { User, Calendar, Phone, Mail, BookOpen, Award } from 'lucide-react';
+import { User, Calendar, Phone, Mail, BookOpen, Award, LogOut } from 'lucide-react';
 
 interface Profile {
   id: string;
@@ -109,6 +109,11 @@ const Profile = ({ currentUserId, isAdmin }: ProfileProps) => {
     }
   };
 
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    toast({ title: 'Signed out' });
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -129,9 +134,14 @@ const Profile = ({ currentUserId, isAdmin }: ProfileProps) => {
     <div className="p-6 space-y-6 max-w-4xl mx-auto">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Profile</h1>
-        <Button onClick={() => setEditing(!editing)}>
-          {editing ? 'View Mode' : 'Edit Mode'}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={handleSignOut}>
+            <LogOut className="w-4 h-4 mr-2" /> Sign Out
+          </Button>
+          <Button onClick={() => setEditing(!editing)}>
+            {editing ? 'View Mode' : 'Edit Mode'}
+          </Button>
+        </div>
       </div>
 
       <Card>
