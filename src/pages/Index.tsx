@@ -8,6 +8,7 @@ import Auth from "./Auth";
 import Home from "./Home";
 import { Toaster } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
+import { Home as HomeIcon } from "lucide-react";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -297,7 +298,11 @@ const Index = () => {
 
   return (
     <ThemeProvider>
-      <header className="fixed left-64 right-0 top-0 h-14 bg-background/80 backdrop-blur border-b border-border z-10 flex items-center justify-end px-6">
+      <header className="fixed left-64 right-0 top-0 h-14 bg-background/80 backdrop-blur border-b border-border z-10 flex items-center justify-end px-6 gap-2">
+        <Button variant="outline" onClick={handleLogout}>
+          <HomeIcon className="w-4 h-4 mr-2" />
+          Home
+        </Button>
         <Button variant="outline" onClick={handleLogout}>Sign Out</Button>
       </header>
       <div className="flex min-h-screen bg-background">
