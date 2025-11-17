@@ -90,11 +90,11 @@ export function Sidebar({ currentPage, onPageChange, onLogout, userName = "Stude
         </Button>
         <Button
           variant="ghost"
-          className="w-full justify-start text-destructive hover:text-destructive hover:bg-sidebar-accent"
+          className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
           onClick={onLogout}
         >
           <LogOut className="w-4 h-4 mr-3" />
-          Logout
+          Sign Out
         </Button>
       </div>
     </aside>
