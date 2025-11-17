@@ -297,6 +297,9 @@ const Index = () => {
 
   return (
     <ThemeProvider>
+      <header className="fixed left-64 right-0 top-0 h-14 bg-background/80 backdrop-blur border-b border-border z-10 flex items-center justify-end px-6">
+        <Button variant="outline" onClick={handleLogout}>Sign Out</Button>
+      </header>
       <div className="flex min-h-screen bg-background">
         <Sidebar 
           currentPage={currentPage} 
@@ -304,10 +307,7 @@ const Index = () => {
           onLogout={handleLogout}
           userName={userName}
         />
-        <main className="ml-64 flex-1 p-8">
-          <div className="flex justify-end mb-6">
-            <Button variant="outline" onClick={handleLogout}>Sign Out</Button>
-          </div>
+        <main className="ml-64 flex-1 p-8 pt-20">
           {renderPage()}
         </main>
         <Toaster />
